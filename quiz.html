@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <style>
+        /* Đặt phông chữ mặc định cho toàn bộ trang */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Cấu hình cho body */
+        body {
+            background-color: #f4f7fc;
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Container chứa quiz */
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        /* Header chứa các nút Home và Finish */
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            width: calc(100% - 40px);
+            z-index: 10;
+        }
+
+        .header button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Màu sắc các nút */
+        #home {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #finish {
+            background-color: #ff5722;
+            color: white;
+        }
+
+        #home:hover {
+            background-color: #45a049;
+        }
+
+        #finish:hover {
+            background-color: #e64a19;
+        }
+
+        /* Nút Finish ẩn khi chưa đến câu cuối */
+        #finish {
+            display: none;
+        }
+
+        /* Câu hỏi */
+        #question {
+            font-size: 20px;
+            margin-top: 60px; /* Thêm khoảng cách để câu hỏi không bị che bởi nút Home */
+            margin-bottom: 20px;
+            text-align: left; /* Căn trái */
+        }
+
+        /* Các đáp án */
+        .options-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: left; /* Căn trái */
+        }
+
+        /* Kết quả khi kiểm tra đáp án */
+        #result {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: left; /* Căn trái */
+        }
+
+        /* Các nút điều hướng */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap; /* Đảm bảo các nút sẽ tự động xuống dòng khi không đủ không gian */
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            margin: 0 5px;
+            min-width: 70px; /* Đảm bảo mỗi nút có chiều rộng tối thiểu */
+        }
+
+        .controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .controls button:hover {
+            background-color: #45a049;
+        }
+
+        /* Media Query cho điện thoại */
+        @media (max-width: 768px) {
+            /* Thay đổi kích thước font chữ và padding cho các phần tử */
+            body {
+                font-size: 14px;
+            }
+
+            .quiz-container {
+                padding: 15px;
+            }
+
+            #question {
+                font-size: 18px;
+            }
+
+            .options-container label {
+                font-size: 14px;
+            }
+
+            .controls button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            /* Giữ các nút nằm ngang và tự động xếp hàng khi không đủ không gian */
+            .controls {
+                flex-direction: row; /* Bảo đảm các nút luôn nằm ngang */
+                justify-content: space-between;
+                gap: 10px; /* Khoảng cách giữa các nút */
+            }
+        }
+
+        /* Media Query cho màn hình rất nhỏ (ví dụ, điện thoại nhỏ) */
+        @media (max-width: 480px) {
+            .controls button {
+                padding: 8px 12px;
+            }
+
+            #question {
+                font-size: 16px;
+            }
+
+            .options-container label {
+                font-size: 13px;
+            }
+        }
+        .timer {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffeb3b;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Nút Home và Finish -->
+    <div class="header">
+        <button id="home" onclick="goHome()">Trang chủ</button>
+        <button id="finish" onclick="finishQuiz()" style="display: none;">Chấm điểm</button>
+    </div>
+
+    <!-- Ô hiển thị thời gian còn lại -->
+    <div id="timer" class="timer"></div>
+
+    <div class="quiz-container">
+        <div id="question"></div>
+        <form id="options" class="options-container"></form>
+        <div class="controls">
+            <button id="back" onclick="navigate(-1)" disabled>Back</button>
+            <button id="check" onclick="checkAnswer()">Check</button>
+            <button id="next" onclick="navigate(1)">Next</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let questions = JSON.parse(localStorage.getItem('questions')) || [];
+        let currentIndex = 0;
+
+        // Lấy timeLimit từ localStorage, nếu không có mặc định là 10 phút
+        let timeLimit = parseInt(localStorage.getItem('timeLimit')) || 10;
+        let remainingTime = timeLimit * 60; // Đổi sang giây
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuestion();
+            startTimer();
+        });
+
+        // Cập nhật thời gian đếm ngược
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            const timerInterval = setInterval(() => {
+                const minutes = Math.floor(remainingTime / 60);
+                const seconds = remainingTime % 60;
+
+                // Hiển thị thời gian còn lại
+                timerElement.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                remainingTime--;
+
+                // Khi hết thời gian, tự động kết thúc bài thi
+                if (remainingTime < 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const questionElement = document.getElementById('question');
+            const optionsForm = document.getElementById('options');
+            const resultElement = document.getElementById('result');
+            const backButton = document.getElementById('back');
+            const nextButton = document.getElementById('next');
+            const finishButton = document.getElementById('finish');
+
+            // Xóa nội dung cũ
+            resultElement.innerHTML = '';
+            optionsForm.innerHTML = '';
+
+            // Nếu đã vượt qua câu cuối, dừng hiển thị câu hỏi
+            if (currentIndex >= questions.length) {
+                return;
+            }
+
+            // Hiển thị câu hỏi hiện tại
+            const currentQuestion = questions[currentIndex];
+            questionElement.innerHTML = `<h4>${currentQuestion.question}</h4>`;
+
+            // Tạo radio button cho từng đáp án
+            currentQuestion.options.forEach((option, index) => {
+                const optionHTML = `
+                    <label>
+                        <input type="radio" name="option" value="${index}" ${currentQuestion.selected === index ? 'checked' : ''}>
+                        <span>${option}</span>
+                    </label><br>
+                `;
+                optionsForm.innerHTML += optionHTML;
+            });
+
+            // Cập nhật trạng thái nút điều hướng
+            backButton.disabled = currentIndex === 0;
+            nextButton.disabled = currentIndex === questions.length - 1;
+            finishButton.style.display = currentIndex === questions.length - 1 ? 'block' : 'none';
+        }
+
+        function checkAnswer() {
+            const currentQuestion = questions[currentIndex];
+            const resultElement = document.getElementById('result');
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+
+            if (!selectedOption) {
+                resultElement.innerHTML = 'Chọn đáp án đi ku!';
+                return;
+            }
+
+            const selectedIndex = parseInt(selectedOption.value);
+            currentQuestion.selected = selectedIndex; // Lưu lựa chọn của người dùng
+
+            if (selectedIndex === currentQuestion.answer) {
+                resultElement.innerHTML = '<span style="color: green;">ĐÚNG là bồ của ta!</span>';
+            } else {
+                let res = currentQuestion.options[currentQuestion.answer];
+                resultElement.innerHTML = `<span style="color: red;">SAI cmnr! kết quả là:<br>${res}</span>`;
+            }
+        }
+
+        function navigate(direction) {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (selectedOption) {
+                questions[currentIndex].selected = parseInt(selectedOption.value);
+            }
+
+            currentIndex += direction;
+
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= questions.length) currentIndex = questions.length - 1;
+
+            loadQuestion();
+        }
+
+        function finishQuiz() {
+            let score = 0;
+            questions.forEach(question => {
+                if (question.selected !== undefined && question.selected === question.answer) {
+                    score++;
+                }
+            });
+
+            const questionElement = document.getElementById('question');
+            const optionsForm = document.getElementById('options');
+            const controls = document.querySelector('.controls');
+
+            // Hiển thị kết quả
+            let d_score = score * 10.0 / questions.length;
+            questionElement.innerHTML = `Đạt ${d_score} điểm (${score}/${questions.length})`;
+            optionsForm.innerHTML = ''; // Xóa lựa chọn
+            controls.innerHTML = '';   // Xóa các nút điều hướng
+        }
+
+        function goHome() {
+            window.location.href = '/';  // Quay về trang chủ
+        }
+    </script>
+</body>
+</html>
