@@ -224,7 +224,7 @@
             const numQuestions = endQuestion - startQuestion + 1;
 
             // Fetch file questions.json và lấy dữ liệu từ đó
-            fetch('https://hlthuc.github.io/vietmap.github.io/questions.json')
+            fetch('https://hlthuc.github.io/vietmap/questions.json')
                 .then(response => response.json())
                 .then(data => {
                     // Lấy câu hỏi theo quiz đã chọn
@@ -241,7 +241,7 @@
                     // Lưu câu hỏi và thời gian vào localStorage và chuyển hướng đến trang quiz
                     localStorage.setItem('questions', JSON.stringify(selectedQuestions));
                     localStorage.setItem('timeLimit', timeLimit); // Lưu giới hạn thời gian
-                    window.location.href = 'https://hlthuc.github.io/vietmap.github.io/quiz.html';  // Chuyển hướng đến quiz.html
+                    window.location.href = 'https://hlthuc.github.io/vietmap/quiz.html';  // Chuyển hướng đến quiz.html
                 })
                 .catch(error => {
                     console.error('Error loading questions:', error);
