@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .header button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: white;
+            color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .header button:hover {
+            background-color: #e6e6e6;
+        }
+
+        .search-box {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .search-box input {
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .question-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question-item h4 {
+            margin: 0 0 10px;
+        }
+
+        .question-item p {
+            margin: 0;
+        }
+
+        .options {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .options p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button onclick="goHome()">Trang chủ</button>
+        <h1>Search Questions</h1>
+    </div>
+
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Nhập từ khóa để tìm kiếm..." oninput="searchQuestions()">
+        </div>
+        <div class="results" id="results">
+            <!-- Kết quả tìm kiếm sẽ hiển thị ở đây -->
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+
+        // Hàm chuyển hướng về trang chủ
+        function goHome() {
+            window.location.href = "index.html"; // Thay bằng URL trang chủ của bạn
+        }
+
+        // Lấy dữ liệu từ questions.json khi truy cập trang
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch("https://hlthuc.github.io/vietmap/questions.json")
+                .then(response => response.json())
+                .then(data => {
+                    questions = data.quiz1; // Sử dụng quiz1 làm dữ liệu tìm kiếm
+                    displayQuestions(questions); // Hiển thị toàn bộ câu hỏi mặc định
+                })
+                .catch(error => console.error("Error loading questions:", error));
+        });
+
+        // Hiển thị danh sách câu hỏi
+        function displayQuestions(questionsToDisplay) {
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = ""; // Xóa kết quả cũ
+
+            if (questionsToDisplay.length === 0) {
+                resultsContainer.innerHTML = "<p>Không tìm thấy câu hỏi phù hợp.</p>";
+                return;
+            }
+
+            questionsToDisplay.forEach(question => {
+                const questionItem = document.createElement("div");
+                questionItem.className = "question-item";
+
+                // Hiển thị câu hỏi và đáp án đúng
+                questionItem.innerHTML = `
+                    <h4>Câu hỏi ${question.id}: ${question.question}</h4>
+                    <div class="options">
+                        <p><strong>Đáp án:</strong> ${question.options[question.answer]}</p>
+                    </div>
+                `;
+
+                resultsContainer.appendChild(questionItem);
+            });
+        }
+
+        // Hàm tìm kiếm
+        function searchQuestions() {
+            const searchInput = document.getElementById("search-input").value.toLowerCase();
+
+            // Lọc câu hỏi theo từ khóa
+            const filteredQuestions = questions.filter(q => 
+                q.question.toLowerCase().includes(searchInput)
+            );
+
+            // Hiển thị câu hỏi đã lọc
+            displayQuestions(filteredQuestions);
+        }
+    </script>
+</body>
+</html>
