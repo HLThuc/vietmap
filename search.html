@@ -81,6 +81,11 @@
         .options p {
             margin: 5px 0;
         }
+
+        .answer {
+            color: green;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -131,11 +136,20 @@
                 const questionItem = document.createElement("div");
                 questionItem.className = "question-item";
 
-                // Hiển thị câu hỏi và đáp án đúng
+                // Tạo danh sách các lựa chọn (options)
+                let optionsHTML = "";
+                question.options.forEach((option, index) => {
+                    const isAnswer = index === question.answer; // Kiểm tra đáp án đúng
+                    optionsHTML += `
+                        <p class="${isAnswer ? "answer" : ""}">- ${option}</p>
+                    `;
+                });
+
+                // Hiển thị câu hỏi, toàn bộ options, và đáp án đúng
                 questionItem.innerHTML = `
                     <h4>Câu hỏi ${question.id}: ${question.question}</h4>
                     <div class="options">
-                        <p><strong>Đáp án:</strong> ${question.options[question.answer]}</p>
+                        ${optionsHTML}
                     </div>
                 `;
 
