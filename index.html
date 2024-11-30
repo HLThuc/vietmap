@@ -169,12 +169,28 @@
                 padding: 10px;
             }
         }
+        .search-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px; /* Thêm khoảng cách dưới nút Search */
+        }
+    
+        .search-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 
 </head>
 <body>
     <div class="container">
         <h1>Welcome to the Quiz App</h1>
+        <button class="search-btn" onclick="goToSearch()">Search</button>
         <p>Choose your question range, select a quiz, and start your test!</p>
 
         <form id="quiz-form" onsubmit="startQuiz(event)">
@@ -255,6 +271,9 @@
                 [array[i], array[j]] = [array[j], array[i]];
             }
             return array;
+        }
+        function goToSearch() {
+            window.location.href = 'https://hlthuc.github.io/vietmap/search.html';
         }
     </script>
 </body>
