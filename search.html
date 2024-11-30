@@ -176,12 +176,20 @@
         // Hàm tìm kiếm
         function searchQuestions() {
             const searchInput = document.getElementById("search-input").value.toLowerCase();
-
-            // Lọc câu hỏi theo từ khóa
-            const filteredQuestions = questions.filter(q => 
-                q.question.toLowerCase().includes(searchInput)
-            );
-
+        
+            // Lọc câu hỏi theo từ khóa trong câu hỏi hoặc đáp án
+            const filteredQuestions = questions.filter(q => {
+                // Kiểm tra từ khóa có trong câu hỏi
+                const isInQuestion = q.question.toLowerCase().includes(searchInput);
+        
+                // Kiểm tra từ khóa có trong danh sách đáp án
+                const isInOptions = q.options.some(option =>
+                    option.toLowerCase().includes(searchInput)
+                );
+        
+                return isInQuestion || isInOptions;
+            });
+        
             // Hiển thị câu hỏi đã lọc
             displayQuestions(filteredQuestions);
         }
