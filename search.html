@@ -127,9 +127,9 @@
             window.location.href = "index.html"; // Thay bằng URL trang chủ của bạn
         }
 
-        // Lấy dữ liệu từ questions.json khi truy cập trang
+        // Lấy dữ liệu từ questions2.json khi truy cập trang
         document.addEventListener("DOMContentLoaded", () => {
-            fetch("https://hlthuc.github.io/vietmap/questions.json")
+            fetch("https://hlthuc.github.io/vietmap/questions2.json")
                 .then(response => response.json())
                 .then(data => {
                     questions = data.quiz1; // Sử dụng quiz1 làm dữ liệu tìm kiếm
@@ -155,7 +155,11 @@
                 // Tạo danh sách các lựa chọn (options)
                 let optionsHTML = "";
                 question.options.forEach((option, index) => {
-                    const isAnswer = index === question.answer; // Kiểm tra đáp án đúng
+                    // Nếu answer là mảng nhiều đáp án thì kiểm tra "có chứa index không"
+                    const isAnswer = Array.isArray(question.answer)
+                        ? question.answer.includes(index)
+                        : index === question.answer;
+                
                     optionsHTML += `
                         <p class="${isAnswer ? "answer" : ""}">- ${option}</p>
                     `;
