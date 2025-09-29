@@ -278,7 +278,7 @@
             currentQuestion.options.forEach((option, index) => {
                 const optionHTML = `
                     <label>
-                        <input type="radio" name="option" value="${index}" ${currentQuestion.selected === index ? 'checked' : ''}>
+                        <input type="checkbox" name="option" value="${index}" ${currentQuestion.selected?.includes(index) ? 'checked' : ''}>
                         <span>${option}</span>
                     </label><br>
                 `;
@@ -294,55 +294,58 @@
         function checkAnswer() {
             const currentQuestion = questions[currentIndex];
             const resultElement = document.getElementById('result');
-            const selectedOption = document.querySelector('input[name="option"]:checked');
-
-            if (!selectedOption) {
+            const selectedOptions = [...document.querySelectorAll('input[name="option"]:checked')].map(el => parseInt(el.value));
+    
+            if (selectedOptions.length === 0) {
                 resultElement.innerHTML = 'Chọn đáp án đi ku!';
                 return;
             }
-
-            const selectedIndex = parseInt(selectedOption.value);
-            currentQuestion.selected = selectedIndex; // Lưu lựa chọn của người dùng
-
-            if (selectedIndex === currentQuestion.answer) {
+    
+            currentQuestion.selected = selectedOptions; // lưu lựa chọn
+    
+            // So sánh mảng selected với answer
+            const correctAnswers = currentQuestion.answer.sort((a,b)=>a-b);
+            const chosenAnswers = selectedOptions.sort((a,b)=>a-b);
+    
+            if (JSON.stringify(correctAnswers) === JSON.stringify(chosenAnswers)) {
                 resultElement.innerHTML = '<span style="color: green;">ĐÚNG là bồ của ta!</span>';
             } else {
-                let res = currentQuestion.options[currentQuestion.answer];
+                const res = correctAnswers.map(i => currentQuestion.options[i]).join(', ');
                 resultElement.innerHTML = `<span style="color: red;">SAI cmnr! kết quả là:<br>${res}</span>`;
             }
         }
 
         function navigate(direction) {
-            const selectedOption = document.querySelector('input[name="option"]:checked');
-            if (selectedOption) {
-                questions[currentIndex].selected = parseInt(selectedOption.value);
+            const selectedOptions = [...document.querySelectorAll('input[name="option"]:checked')].map(el => parseInt(el.value));
+            if (selectedOptions.length > 0) {
+                questions[currentIndex].selected = selectedOptions;
             }
-
+    
             currentIndex += direction;
-
             if (currentIndex < 0) currentIndex = 0;
             if (currentIndex >= questions.length) currentIndex = questions.length - 1;
-
+    
             loadQuestion();
         }
 
         function finishQuiz() {
             let score = 0;
             questions.forEach(question => {
-                if (question.selected !== undefined && question.selected === question.answer) {
+                const correctAnswers = question.answer.sort((a,b)=>a-b);
+                const chosenAnswers = (question.selected || []).sort((a,b)=>a-b);
+                if (JSON.stringify(correctAnswers) === JSON.stringify(chosenAnswers)) {
                     score++;
                 }
             });
-
+    
             const questionElement = document.getElementById('question');
             const optionsForm = document.getElementById('options');
             const controls = document.querySelector('.controls');
-
-            // Hiển thị kết quả
+    
             let d_score = score * 10.0 / questions.length;
             questionElement.innerHTML = `Đạt ${d_score} điểm (${score}/${questions.length})`;
-            optionsForm.innerHTML = ''; // Xóa lựa chọn
-            controls.innerHTML = '';   // Xóa các nút điều hướng
+            optionsForm.innerHTML = '';
+            controls.innerHTML = '';
         }
 
         function goHome() {
