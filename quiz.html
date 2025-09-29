@@ -222,6 +222,27 @@
     </div>
 
     <script>
+        const successMessages = [
+          "Ờ mày giỏi quá 😏",
+          "Thằng này chắc ăn ở hiền 🤣",
+          "Tao nói rồi mà, ngu sao sai được 🤟",
+          "Lại đúng nữa kìa, ngứa mắt vl 😤",
+          "Gà mà cũng đúng hả? 😜",
+          "Thề, đoán bừa cũng trúng 🤯",
+          "Mày hack à? 👀",
+          "Rùa vl",
+          "Ông hoàng đoán mò đây rồi 🤡"
+        ];
+        const failMessages = [
+            "Mù chữ hả con? 🤦",
+            "Sai be bét, nhục chưa 😝",
+            "Đúng là não cá vàng 🐟",
+            "Sai lòi ra mà còn bày đặt 😏",
+            "Trời đất ơi, sai mà vẫn tự tin 😆",
+            "Đoán mò cũng không trúng nổi 🤯",
+            "Nhìn đáp án mà thấy thương 🥲",
+            "Ngu chính thống rồi bạn ơi 😂"
+        ];
         let questions = JSON.parse(localStorage.getItem('questions')) || [];
         let currentIndex = 0;
 
@@ -308,10 +329,17 @@
             const chosenAnswers = selectedOptions.sort((a,b)=>a-b);
     
             if (JSON.stringify(correctAnswers) === JSON.stringify(chosenAnswers)) {
-                resultElement.innerHTML = '<span style="color: green;">ĐÚNG là bồ của ta!</span>';
+                const randomMsg = successMessages[Math.floor(Math.random() * successMessages.length)];
+                resultElement.innerHTML = `<span style="color: green;">${randomMsg}</span>`;
             } else {
+                const randomFail = failMessages[Math.floor(Math.random() * failMessages.length)];
                 const res = correctAnswers.map(i => currentQuestion.options[i]).join(', ');
-                resultElement.innerHTML = `<span style="color: red;">SAI cmnr! kết quả là:<br>${res}</span>`;
+                resultElement.innerHTML = `
+                    <span style="color: red;">
+                        ${randomFail}<br>
+                        Đáp án đúng: ${res}
+                    </span>
+                `;
             }
         }
 
