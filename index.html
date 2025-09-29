@@ -209,7 +209,7 @@
                 <input type="number" id="start" name="start" min="1" placeholder="e.g., 1" value="1">
             </div>
             <div class="input-group">
-                <label for="end">Câu kết thúc (max=481):</label>
+                <label for="end">Câu kết thúc:</label>
                 <input type="number" id="end" name="end" placeholder="e.g., 10" value="5">
             </div>
             <div class="input-group">
@@ -237,8 +237,6 @@
             const timeLimit = parseInt(formData.get('timeLimit')); // Lấy giá trị giới hạn thời gian
             const randomize = formData.get('randomize') !== null; // Kiểm tra xem người dùng có chọn random hay không
 
-            const numQuestions = endQuestion - startQuestion + 1;
-
             // Fetch file questions2.json và lấy dữ liệu từ đó
             fetch('https://hlthuc.github.io/vietmap/questions2.json')
                 .then(response => response.json())
@@ -252,7 +250,7 @@
                     }
 
                     // Chỉ lấy các câu hỏi trong phạm vi đã chọn
-                    const selectedQuestions = questions.slice(0, numQuestions);
+                    const selectedQuestions = questions.slice(startQuestion, endQuestion + 1);
 
                     // Lưu câu hỏi và thời gian vào localStorage và chuyển hướng đến trang quiz
                     localStorage.setItem('questions', JSON.stringify(selectedQuestions));
