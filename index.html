@@ -259,7 +259,7 @@
                     }
 
                     // Chỉ lấy các câu hỏi trong phạm vi đã chọn
-                    const selectedQuestions = questions.slice(startQuestion, endQuestion + 1);
+                    const selectedQuestions = questions.slice(startQuestion - 1, endQuestion + 1);
 
                     // Lưu câu hỏi và thời gian vào localStorage và chuyển hướng đến trang quiz
                     localStorage.setItem('questions', JSON.stringify(selectedQuestions));
