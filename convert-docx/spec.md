@@ -19,10 +19,10 @@
 
 ## How to Recognize Answers
 
-* The answer will begin with *A.*, *B.*,... and may have 2 or 4 options. Read until the end of the sentence (either the beginning of the next question or the end of the file) within each sentence, there are signals indicating the correct answer.
+* The answer will begin with *A.*, *B.*,... and may have 2 or 4 options. Read until the end of the sentence (either the beginning of the next question or the end of the file) within each sentence, there are signals indicating the correct answer. Sometime it's word typed, but some other time it's a bullet *A.*, *B.*,...
 * The answear in a question must be 2 or 4 options. Read until the end of the sentence (either the beginning of the next question or the end of the file) within each sentence, there are signals indicating the correct answer.
 * Since the person who wrote the quiz file is extremely incompetent, they will not have a standardized format for answers, sometimes it will be in bold letters, other times in normal letters but colored red.
-* Check bold letters: use loop and check wether the answer is in normal or bold letters. If it's not in bold letters, then it's wrong. If all of the answear are bold letters or normal letters, then it's wrong, let's do next checking.
+* Check bold letters: use loop and check wether the answer is in normal or bold letters. If it's not in bold letters, then it's wrong. If all of the answear are normal letters, then it's wrong, let's do next checking. Note: remember that the question will can be bold letter also, therefore u must check this case and don't add the `question` into the `answear` 
 * Check red color: use loop and check wether the answer is in red or not. If it's not in red, then it's wrong. If all of the answear are red or normal letters, then it's wrong, place the right answear to `-1`, i will checking it later.
 
 ## Output Format Requirement
